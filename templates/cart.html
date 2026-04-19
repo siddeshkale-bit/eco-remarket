@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body { background-color: #e8f0fe !important; }
+    .cart-wrapper { background: #ffffff; border-radius: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid rgba(25,135,84,0.1); padding: 2rem; }
+    .cart-item { border-bottom: 1px solid #f1f3f5; padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+    .cart-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .summary-box { background: #f8fcf9; border-radius: 1rem; padding: 2rem; border: 1px solid rgba(25,135,84,0.1); }
+</style>
+
+<div class="container py-5 animate__animated animate__fadeInUp">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6 fw-bold text-dark m-0"><i class="bi bi-cart3 text-success me-2"></i>Shopping Cart</h1>
+        {% if items %}
+            <a href="/clear_cart" class="btn btn-outline-danger rounded-pill px-4 fw-bold btn-sm shadow-sm"><i class="bi bi-trash3 me-2"></i>Clear Cart</a>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="cart-wrapper">
+                {% if items %}
+                    {% for item in items %}
+                    <div class="cart-item d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ item.photo }}" alt="{{ item.name }}" class="rounded-3 shadow-sm border" style="width: 80px; height: 80px; object-fit: cover;">
+                            <div class="ms-4">
+                                <h5 class="fw-bold text-dark mb-1">{{ item.name }}</h5>
+                                <span class="badge bg-light text-secondary border px-2 py-1 mb-2">{{ item.category }}</span>
+                                <h6 class="text-success fw-bold m-0">₹{{ "%.2f"|format(item.price) }} <span class="text-muted small fw-normal ms-1">each</span></h6>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="bg-light border rounded-pill px-3 py-1 d-inline-block mb-2">
+                                <span class="text-muted small fw-bold">Qty: {{ item.qty | default(1) }}</span>
+                            </div>
+                            <h5 class="fw-bold text-dark m-0">₹{{ "%.2f"|format(item.price * item.qty | default(1)) }}</h5>
+                            <a href="{{ url_for('remove_from_cart', index=loop.index0) }}" class="text-danger small text-decoration-none d-block mt-2"><i class="bi bi-x-circle me-1"></i>Remove</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="bi bi-cart-x fs-1 text-muted"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark">Your cart is empty</h4>
+                        <p class="text-muted">Looks like you haven't added anything yet.</p>
+                        <a href="/products" class="btn btn-success rounded-pill px-5 py-2 mt-2 fw-bold shadow-sm">Start Shopping</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if items %}
+        <div class="col-lg-4 animate__animated animate__fadeInRight">
+            <div class="summary-box sticky-top" style="top: 2rem;">
+                <h4 class="fw-bold text-dark mb-4 border-bottom pb-3">Order Summary</h4>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Cart Lines</span>
+                    <span class="fw-bold text-dark">{{ items|length }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-4 border-bottom pb-4">
+                    <span class="text-muted">Shipping</span>
+                    <span class="fw-bold text-success">FREE</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold text-dark m-0">Grand Total</h5>
+                    <h3 class="fw-bold text-success m-0">₹{{ "%.2f"|format(total) }}</h3>
+                </div>
+                <a href="/checkout" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow-sm py-3 mb-3">
+                    Place Order <i class="bi bi-arrow-right-circle ms-2"></i>
+                </a>
+                <a href="/products" class="btn btn-light btn-lg w-100 rounded-pill fw-bold border text-muted py-3">
+                    <i class="bi bi-chevron-left me-2"></i> Continue Shopping
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

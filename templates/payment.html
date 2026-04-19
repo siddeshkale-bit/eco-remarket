@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* MAGIC LINE: Colors the entire screen background, edge to edge with Soft Modern Blue */
+    body {
+        background-color: #e8f0fe !important; 
+    }
+
+    /* Premium Payment UI Styles */
+    .payment-wrapper {
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .payment-card {
+        border-radius: 2rem;
+        background: #ffffff;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .summary-box {
+        background: #f8faf9;
+        border: 1px dashed #c3e6cb;
+        border-radius: 1.2rem;
+    }
+
+    .toggle-container {
+        background: #f1f3f5;
+        padding: 5px;
+        border-radius: 1rem;
+    }
+
+    .toggle-btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none !important;
+        font-size: 0.9rem;
+    }
+
+    .toggle-btn.active {
+        background: white !important;
+        color: #198754 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .qr-frame {
+        background: white;
+        padding: 15px;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+    }
+
+    .pay-button {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .pay-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container py-5 payment-wrapper">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card payment-card">
+                
+                <div style="height: 8px; background: linear-gradient(90deg, #198754, #ffc107);"></div>
+
+                <div class="card-body p-4 p-md-5 text-center">
+                    <h3 class="fw-bold mb-4 text-dark">Checkout</h3>
+
+                    <div class="summary-box p-3 mb-4">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>Order ID</span>
+                            <span class="fw-bold">#{{ order['order_id'] }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="fw-bold text-dark">Total Payable</span>
+                            <span class="text-success h4 fw-bold mb-0">₹{{ "%.2f"|format(order['total']) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="toggle-container d-flex mb-4">
+                        <button id="btn-qr" class="btn toggle-btn active w-50 fw-bold rounded-3">
+                            <i class="bi bi-qr-code-scan me-2"></i>Scan QR
+                        </button>
+                        <button id="btn-upi" class="btn toggle-btn w-50 fw-bold rounded-3 text-muted">
+                            <i class="bi bi-at me-2"></i>UPI ID
+                        </button>
+                    </div>
+
+                    <form action="{{ url_for('process_payment', order_id=order['order_id']) }}" method="POST" id="payment-form">
+                        
+                        <div id="section-qr" class="animate__animated animate__fadeIn">
+                            <p class="text-muted small mb-3">Scan with GPay, PhonePe, or Any UPI App</p>
+                            <div class="qr-frame d-inline-block mb-4">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=ecoremarket@upi&pn=EcoRemarket&am={{ order['total'] }}" alt="UPI QR Code" class="img-fluid rounded-3">
+                            </div>
+                        </div>
+
+                        <div id="section-upi" class="d-none animate__animated animate__fadeIn text-start mb-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" name="upi_id" id="upi_input" class="form-control rounded-3 border-light bg-light" placeholder="username@upi">
+                                <label for="upi_input">Enter your UPI ID</label>
+                            </div>
+                            <div class="p-3 bg-light rounded-3 small text-muted border">
+                                <i class="bi bi-info-circle me-1 text-success"></i> A request will be sent to your UPI app.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold pay-button py-3 d-flex align-items-center justify-content-center gap-2">
+                            <span>Confirm Payment</span>
+                            <i class="bi bi-shield-check fs-5"></i>
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4 pt-2">
+                        <div class="d-flex justify-content-center align-items-center gap-3 text-muted small mb-3">
+                            <span><i class="bi bi-lock-fill"></i> Secure</span>
+                            <span><i class="bi bi-shield-shaded"></i> Verified</span>
+                        </div>
+                        <a href="/my_orders" class="text-decoration-none text-success fw-bold small">
+                            <i class="bi bi-chevron-left me-1"></i> Return to Orders
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnQr = document.getElementById('btn-qr');
+        const btnUpi = document.getElementById('btn-upi');
+        const sectionQr = document.getElementById('section-qr');
+        const sectionUpi = document.getElementById('section-upi');
+        const upiInput = document.getElementById('upi_input');
+
+        function toggleMode(isQr) {
+            if(isQr) {
+                btnQr.classList.add('active');
+                btnQr.classList.remove('text-muted');
+                btnUpi.classList.remove('active');
+                btnUpi.classList.add('text-muted');
+                sectionQr.classList.remove('d-none');
+                sectionUpi.classList.add('d-none');
+                upiInput.removeAttribute('required');
+            } else {
+                btnUpi.classList.add('active');
+                btnUpi.classList.remove('text-muted');
+                btnQr.classList.remove('active');
+                btnQr.classList.add('text-muted');
+                sectionUpi.classList.remove('d-none');
+                sectionQr.classList.add('d-none');
+                upiInput.setAttribute('required', 'required');
+            }
+        }
+
+        btnQr.addEventListener('click', () => toggleMode(true));
+        btnUpi.addEventListener('click', () => toggleMode(false));
+    });
+</script>
+{% endblock %}

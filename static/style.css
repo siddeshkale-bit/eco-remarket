@@ -1,0 +1,41 @@
+/* Custom Styles for Eco Remarket */
+
+/* Make cards lift up when you hover over them */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Smooth button transitions */
+.btn {
+    transition: all 0.3s ease;
+}
+
+/* Custom Eco Green Hover for primary buttons */
+.btn-success:hover {
+    background-color: #145c32; /* A slightly darker green */
+    border-color: #145c32;
+    transform: scale(1.05);
+}
+
+/* Make the placeholder images look a bit nicer */
+.bg-light.text-center.py-5 {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transition: background 0.3s ease;
+}
+
+.card:hover .bg-light.text-center.py-5 {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+}
+
+/* Fix navbar link hover */
+.navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+    font-weight: bold;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}

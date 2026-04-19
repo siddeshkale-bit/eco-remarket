@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* MAGIC LINE: Colors the entire screen background, edge to edge with Soft Modern Blue */
+    body {
+        background-color: #e8f0fe !important; 
+    }
+
+    /* Solid White Header Box */
+    .about-header {
+        background-color: #ffffff; 
+        border-radius: 1.5rem;
+        padding: 4rem 2rem;
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        border: 1px solid #d1e7dd;
+    }
+
+    .info-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1.5rem;
+        border: none;
+        background-color: #ffffff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+    .info-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(25, 135, 84, 0.15) !important;
+    }
+
+    /* Solid Dark Green Card */
+    .info-card-solid {
+        background-color: #198754; 
+    }
+
+    .info-card-solid:hover {
+        box-shadow: 0 12px 24px rgba(25, 135, 84, 0.3) !important;
+    }
+
+    .feature-list li {
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        font-size: 1.05rem;
+    }
+    
+    .feature-list i {
+        margin-top: 3px;
+    }
+
+    /* Icon circles for values */
+    .value-icon {
+        width: 50px;
+        height: 50px;
+        background: #f8f9fa;
+        color: #198754;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="animate__animated animate__fadeIn pb-5">
+
+    <div class="about-header text-center animate__animated animate__fadeInDown">
+        <h1 class="display-4 fw-bolder mb-3 text-dark">About <span class="text-success">Eco Remarket</span></h1>
+        <p class="col-md-8 mx-auto fs-4 text-secondary lh-base mb-0">
+            Empowering creators and resellers to build thriving, sustainable businesses in the <strong class="text-dark">Electronics</strong> and <strong class="text-dark">Toys</strong> markets.
+        </p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        
+        <div class="col-md-6 animate__animated animate__fadeInLeft">
+            <div class="card info-card h-100 p-4 p-md-5">
+                <div class="mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle" style="width: 60px; height: 60px;">
+                        <i class="bi bi-bullseye fs-2"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-3">Our Mission</h3>
+                <p class="text-secondary fs-5 lh-lg mb-0">
+                    Eco Remarket was developed with a vision to create a seamless, accessible marketplace. We aim to bridge the gap between innovative product creators and ambitious resellers, providing a robust and easy-to-use platform for sustainable digital commerce.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 animate__animated animate__fadeInRight">
+            <div class="card info-card info-card-solid h-100 p-4 p-md-5">
+                <div class="mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white text-success rounded-circle shadow-sm" style="width: 60px; height: 60px;">
+                        <i class="bi bi-stars fs-2"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-white mb-4">What We Offer</h3>
+                <ul class="list-unstyled text-white feature-list mb-0 lh-base">
+                    <li><i class="bi bi-check-circle-fill text-light fs-5"></i> <span>Curated categories for high-quality Electronics & Toys.</span></li>
+                    <li><i class="bi bi-check-circle-fill text-light fs-5"></i> <span>Flexible roles: Join as a Creator or a Reseller.</span></li>
+                    <li><i class="bi bi-check-circle-fill text-light fs-5"></i> <span>Streamlined cart & secure payment tracking.</span></li>
+                    <li><i class="bi bi-check-circle-fill text-light fs-5"></i> <span>A clean, intuitive interface built for modern browsing.</span></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row text-center g-4 mb-5 animate__animated animate__fadeInUp">
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="value-icon mx-auto"><i class="bi bi-shield-check fs-3"></i></div>
+                <h5 class="fw-bold text-dark">Trust</h5>
+                <p class="text-muted small">Secure transactions and verified business roles.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="value-icon mx-auto"><i class="bi bi-lightning-charge fs-3"></i></div>
+                <h5 class="fw-bold text-dark">Efficiency</h5>
+                <p class="text-muted small">Fast listing, easy browsing, and quick checkout.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="value-icon mx-auto"><i class="bi bi-people fs-3"></i></div>
+                <h5 class="fw-bold text-dark">Community</h5>
+                <p class="text-muted small">Connecting creators with global market resellers.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5 animate__animated animate__fadeInUp">
+        <h4 class="fw-bold text-dark mb-4">Ready to join the community?</h4>
+        <a href="/products" class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold text-uppercase" style="letter-spacing: 1px; background-color: #198754; border: none;">
+            Start Exploring <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

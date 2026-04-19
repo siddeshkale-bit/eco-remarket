@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #e8f0fe !important; 
+    }
+
+    .modern-bg {
+        background-color: #e8f0fe; 
+        border-radius: 1.5rem;
+        padding: 1rem 0;
+    }
+    
+    .hero-card {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        border: 1px solid #d1e7dd;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #198754, #20c997);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .category-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1.5rem;
+        border: none;
+        min-height: 380px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end; 
+        padding: 2.5rem !important;
+    }
+
+    .category-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+    }
+
+    .bg-electronics {
+        background: linear-gradient(to bottom, rgba(33, 37, 41, 0) 0%, rgba(33, 37, 41, 0.8) 60%, rgba(33, 37, 41, 1) 100%), 
+                    url("/static/tech.jpg");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .bg-toys {
+        background: linear-gradient(to bottom, rgba(20, 108, 67, 0) 0%, rgba(20, 108, 67, 0.8) 60%, rgba(20, 108, 67, 1) 100%), 
+                    url("/static/toy.jpg");
+        background-size: cover;
+        background-position: center;
+    }
+</style>
+
+<div class="modern-bg mt-3">
+    <div class="hero-card p-5 mb-5 text-center animate__animated animate__fadeIn">
+        <h1 class="display-4 fw-bolder mb-3 text-dark">Welcome to <span class="gradient-text">Eco Remarket</span></h1>
+        
+        <p class="col-md-8 mx-auto fs-5 text-secondary mt-3 mb-4 lh-base">
+            Your trusted premium marketplace for sustainable <strong class="text-dark">Electronics</strong> and <strong class="text-dark">Toys</strong>. 
+            Join our community to discover high-quality products at unbeatable prices.
+        </p>
+        
+        <div class="mt-4 pb-2">
+            <a href="/products" class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold text-uppercase" style="letter-spacing: 1px;">
+                Start Shopping <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="row align-items-md-stretch text-center g-4">
+        
+        <div class="col-md-6 animate__animated animate__fadeInLeft">
+            <div class="text-white bg-electronics category-card shadow">
+                <h2 class="fw-bold mb-3">Electronics</h2>
+                <p class="text-white-50 mb-4 px-3 fs-6">
+                    Discover top-tier gadgets, smart devices, and premium accessories at sustainable prices.
+                </p>
+                <div>
+                    <a href="/products?tab=electronics" class="btn btn-outline-light rounded-pill px-5 py-2 fw-bold shadow-sm">Explore Tech</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 animate__animated animate__fadeInRight">
+            <div class="text-white bg-toys category-card shadow">
+                <h2 class="fw-bold mb-3">Toys</h2>
+                <p class="text-white-50 mb-4 px-3 fs-6">
+                    Find fun, engaging, and high-quality toys for all ages. Perfect for gifts and learning.
+                </p>
+                <div>
+                    <a href="/products?tab=toys" class="btn btn-outline-light rounded-pill px-5 py-2 fw-bold shadow-sm">Explore Toys</a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

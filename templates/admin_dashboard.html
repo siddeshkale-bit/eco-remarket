@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* MAGIC LINE: Colors the entire screen background, edge to edge with Soft Modern Blue */
+    body {
+        background-color: #e8f0fe !important; 
+    }
+
+    .admin-stat-card {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 1.5rem;
+    }
+
+    .admin-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+
+    .admin-table-card {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    /* TABS STYLING */
+    .nav-pills .nav-link {
+        color: #6c757d;
+        font-weight: 700;
+        border-radius: 50rem;
+        padding: 0.75rem 2rem;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: #f8f9fa;
+        color: #0dcaf0; /* Admin Accent Color */
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #212529 !important; /* Dark Admin Theme */
+        color: #ffffff !important; 
+        box-shadow: 0 4px 15px rgba(33, 37, 41, 0.25);
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f3f5;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown">
+    <div>
+        <h1 class="display-5 fw-bold text-dark m-0">
+            <i class="bi bi-shield-lock-fill text-dark me-2"></i> Admin Control Panel
+        </h1>
+        <p class="text-muted mt-2 mb-0">Platform Overview & Management</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+    <div class="col-md-4">
+        <div class="admin-stat-card d-flex align-items-center">
+            <div class="icon-box bg-primary bg-opacity-10 text-primary me-3">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div>
+                <p class="text-muted small fw-bold text-uppercase mb-1">Total Users</p>
+                <h3 class="fw-bold text-dark m-0">{{ users|length if users else 0 }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="admin-stat-card d-flex align-items-center">
+            <div class="icon-box bg-success bg-opacity-10 text-success me-3">
+                <i class="bi bi-box-seam-fill"></i>
+            </div>
+            <div>
+                <p class="text-muted small fw-bold text-uppercase mb-1">Active Products</p>
+                <h3 class="fw-bold text-dark m-0">{{ all_products|length if all_products else 0 }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="admin-stat-card d-flex align-items-center">
+            <div class="icon-box bg-warning bg-opacity-10 text-warning me-3">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div>
+                <p class="text-muted small fw-bold text-uppercase mb-1">Total Orders</p>
+                <h3 class="fw-bold text-dark m-0">{{ all_orders|length if all_orders else 0 }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center mb-4 animate__animated animate__fadeIn">
+    <ul class="nav nav-pills p-2 bg-white rounded-pill shadow-sm border" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                <i class="bi bi-person-lines-fill me-2"></i>User Accounts
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">
+                <i class="bi bi-tags-fill me-2"></i>Product Listings
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">
+                <i class="bi bi-cart-check-fill me-2"></i>Transactions
+            </button>
+        </li>
+    </ul>
+</div>
+
+<div class="tab-content animate__animated animate__fadeInUp" id="adminTabsContent">
+    
+    <div class="tab-pane fade show active" id="users" role="tabpanel">
+        <div class="admin-table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if users %}
+                            {% for u in users %}
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">{{ u.name }}</td>
+                                <td class="text-muted">{{ u.email }}</td>
+                                <td>
+                                    {% if u.role == 'creator' %}
+                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill">Creator</span>
+                                    {% elif u.role == 'reseller' %}
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill">Reseller</span>
+                                    {% else %}
+                                        <span class="badge bg-dark px-3 py-2 rounded-pill">Admin</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if u.role != 'admin' %}
+                                    <a href="{{ url_for('admin_delete_user', user_id=u.id) }}" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-3" onclick="return confirm('Ban and delete this user entirely?')">
+                                        <i class="bi bi-trash3-fill"></i> Ban
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="4" class="text-center py-5 text-muted">No users found in the system.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="products" role="tabpanel">
+        <div class="admin-table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Product Info</th>
+                            <th>Category</th>
+                            <th>Seller</th>
+                            <th>Price</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if all_products %}
+                            {% for p in all_products %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ p.photo }}" alt="{{ p.name }}" class="rounded border me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <span class="fw-bold text-dark">{{ p.name }}</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-light border text-dark">{{ p.category }} / {{ p.sub_category }}</span></td>
+                                <td class="text-muted"><i class="bi bi-shop me-1"></i> {{ p.shop_name if p.shop_name else 'Unknown' }}</td>
+                                <td class="fw-bold text-success">₹{{ "%.2f"|format(p.price) }}</td>
+                                <td class="text-end pe-4">
+                                    <a href="{{ url_for('admin_delete_product', product_id=p.id) }}" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-3" onclick="return confirm('Force remove this product from the platform?')">
+                                        <i class="bi bi-x-circle-fill"></i> Remove
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="5" class="text-center py-5 text-muted">No products listed on the platform yet.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="orders" role="tabpanel">
+        <div class="admin-table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Order ID</th>
+                            <th>Buyer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if all_orders %}
+                            {% for o in all_orders %}
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">#{{ o.order_id }}</td>
+                                <td class="text-muted"><i class="bi bi-person me-1"></i> {{ o.buyer_email }}</td>
+                                <td class="fw-bold text-dark">₹{{ "%.2f"|format(o.total) }}</td>
+                                <td>
+                                    {% if o.status == 'Unpaid' %}
+                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Unpaid</span>
+                                    {% else %}
+                                        <span class="badge bg-success px-3 py-2 rounded-pill">Paid</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="4" class="text-center py-5 text-muted">No transactions have occurred yet.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

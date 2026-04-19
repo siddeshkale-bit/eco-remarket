@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body { background-color: #e8f0fe !important; }
+    .dashboard-card { background: #ffffff; border-radius: 1.5rem; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); border: 1px solid rgba(25, 135, 84, 0.1); padding: 2.5rem; }
+    .stat-box { background: linear-gradient(135deg, #198754, #20c997); color: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 10px 20px rgba(25, 135, 84, 0.2); }
+    .item-card { border-radius: 1rem; border: 1px solid #e9ecef; transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
+    .item-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+    .shipping-box { background-color: #f8fcf9; border-left: 4px solid #198754; height: 100%; }
+</style>
+
+<div class="container py-5 animate__animated animate__fadeInUp">
+    
+    {% if session.get('role') == 'creator' %}
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold text-dark mb-1"><i class="bi bi-graph-up-arrow text-success me-2"></i>Sales Dashboard</h1>
+            <p class="text-muted fs-5">Track your sold items and shipping details.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="stat-box d-inline-block text-start w-100">
+                <p class="mb-0 text-white-50 fw-bold text-uppercase small" style="letter-spacing: 1px;">Total Earnings</p>
+                <h2 class="fw-bolder mb-0 display-6">₹{{ "%.2f"|format(total_earned) }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h4 class="fw-bold mb-4 border-bottom pb-3">Items to Fulfill</h4>
+        {% if sales %}
+            <div class="d-flex flex-column gap-4">
+            {% for sale in sales %}
+                <div class="card item-card shadow-sm border-0">
+                    <div class="row g-0 align-items-stretch">
+                        <div class="col-md-2 text-center p-3 d-flex align-items-center justify-content-center bg-light">
+                            <img src="{{ sale.photo }}" class="img-fluid rounded shadow-sm" style="max-height: 120px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-5 p-4 d-flex flex-column justify-content-center">
+                            <span class="badge bg-success bg-opacity-10 text-success mb-2 w-auto align-self-start border border-success">Order #{{ sale.order_id }}</span>
+                            <h5 class="fw-bold mb-1 text-dark"><span class="text-success">{{ sale.qty }}x</span> {{ sale.product_name }}</h5>
+                            <h4 class="text-success fw-bold mt-2 mb-0">₹{{ "%.2f"|format(sale.total_price) }}</h4>
+                        </div>
+                        <div class="col-md-5 p-4 shipping-box">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-truck me-2 text-success"></i>Ship To Reseller:</h6>
+                            <p class="mb-1 small text-dark"><i class="bi bi-shop me-2 text-muted"></i><strong>{{ sale.reseller_shop }}</strong></p>
+                            <p class="mb-2 small text-dark"><i class="bi bi-telephone me-2 text-muted"></i>{{ sale.reseller_contact }}</p>
+                            <div class="d-flex text-muted small"><i class="bi bi-geo-alt-fill me-2 mt-1"></i><span>{{ sale.reseller_address }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-box-seam text-muted" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold text-secondary mt-3">No sales yet</h4>
+            </div>
+        {% endif %}
+    </div>
+
+    {% elif session.get('role') == 'reseller' %}
+    <div class="mb-5">
+        <h1 class="display-5 fw-bold text-dark mb-1"><i class="bi bi-box2-heart text-success me-2"></i>My Orders</h1>
+        <p class="text-muted fs-5">Review your purchase history.</p>
+    </div>
+
+    <div class="dashboard-card">
+        {% if orders %}
+            <div class="d-flex flex-column gap-4">
+            {% for order in orders %}
+                <div class="card item-card shadow-sm">
+                    <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Order ID</span>
+                            <h5 class="fw-bold text-dark mb-0">#{{ order.order_id }}</h5>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm mb-2">{{ order.status }}</span>
+                            <h4 class="text-dark fw-bold mb-0">Total: ₹{{ "%.2f"|format(order.total) }}</h4>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 bg-light">
+                        <h6 class="fw-bold text-muted mb-3 small text-uppercase">Items in this order</h6>
+                        <div class="row g-3">
+                            {% for item in order['items'] %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="d-flex align-items-center bg-white p-2 rounded border shadow-sm">
+                                    <img src="{{ item.photo }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div>
+                                        <p class="mb-0 fw-bold text-dark small"><span class="badge bg-success me-1">{{ item.qty }}x</span> {{ item.name }}</p>
+                                        <p class="mb-0 text-success fw-bold small">₹{{ "%.2f"|format(item.price * item.qty) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-cart-x text-muted" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold text-secondary mt-3">No orders placed</h4>
+                <a href="/products" class="btn btn-success rounded-pill px-4 mt-2">Explore Products</a>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
